@@ -11,7 +11,7 @@ The game engine is written in javascript with no 3rd party dependencies. It’s 
 ##### AI - https://github.com/shaw3257/hive/blob/master/lib/ai.js
 The AI is also written in javascript with no 3rd party dependencies and is an implementation of the minimax algorithm with alpha beta pruning. It runs on the client-side in a separate thread via the Web Worker API.
 
-##### UI - https://github.com/shaw3257/hive/blob/master/lib/ai.js
+##### UI - https://github.com/shaw3257/hive/blob/master/app/assets/javascripts/game/board/board-ui.js
 The UI uses the Canvas API along with Kinetic.js to render the pieces. The hexagonal grid was constructed with good ol’e fashion trigonometry.
 
 ##### Server - https://github.com/shaw3257/hive/blob/master/app/server.js

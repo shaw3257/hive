@@ -15,7 +15,7 @@ angular.module('hive').directive('board', function(){
     '<div class="board-container">' +
       '<div id="board-oppenent-line" class="player-line">{{hive.usernameOpponent}}</div>' +
       '<div id="board-canvas"></div>' +
-      '<div id="board-me-line" class="player-line" ng-show="hive.ready">{{hive.username}} (ME) </div>' +
+      '<div id="board-me-line" class="player-line" ng-show="hive.ready">{{hive.username}} (Me) </div>' +
     '</div>',
 
     link: function($scope, element, attrs){

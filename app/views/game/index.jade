@@ -30,37 +30,13 @@ html(lang='en')
               | VS Computer
             a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(ng-click='resignGame()' ng-class='{"mdl-button--disabled": !hive || hive.board.isGameover}')
               | Resign
-        .mdl-card.mdl-shadow--2dp.hive-card-wide(ng-show='!hive')
+        .mdl-card.mdl-shadow--2dp.hive-card-wide
           .mdl-card__title
-            h2.mdl-card__title-text Development: Game Engine
+            h2.mdl-card__title-text Information
           .mdl-card__supporting-text
-              | The game engine is written in javascript with no 3rd party dependencies. It’s job is to keep game state and to emit events when moves are validated and processed.
+              | New to Hive? Check out the rules below. The source code is also available below.
           .mdl-card__actions.mdl-card--border
+            a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href='http://www.gen42.com/downloads/rules/Hive_Rules.pdf')
+              | Rules
             a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href='https://github.com/shaw3257/hive')
-              | Source Code
-        .mdl-card.mdl-shadow--2dp.hive-card-wide(ng-show='!hive')
-          .mdl-card__title
-            h2.mdl-card__title-text Development: AI
-          .mdl-card__supporting-text
-            | The AI is also written in javascript with no 3rd party dependencies and is an implementation of the minimax algorithm with alpha beta pruning. It runs on the client-side in a separate thread via the Web Worker API
-          .mdl-card__actions.mdl-card--border
-            a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href='https://github.com/shaw3257/hive')
-              | Source Code
-
-        .mdl-card.mdl-shadow--2dp.hive-card-wide(ng-show='!hive')
-          .mdl-card__title
-            h2.mdl-card__title-text Development: Server
-          .mdl-card__supporting-text
-            | The hive server runs on Node.js via the Express framework. The decision to use Node.js was to use the game engine on the client-side and the server-side.
-          .mdl-card__actions.mdl-card--border
-            a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href='https://github.com/shaw3257/hive')
-              | Source Code
-
-        .mdl-card.mdl-shadow--2dp.hive-card-wide(ng-show='!hive')
-          .mdl-card__title
-            h2.mdl-card__title-text Development: UI
-          .mdl-card__supporting-text
-            | The UI uses the Canvas API along with Kinetic.js to render the pieces. The hexagonal grid was constructed with good ol’e fashion trigonometry.
-          .mdl-card__actions.mdl-card--border
-            a.mdl-button.mdl-button--colored.mdl-js-button.mdl-js-ripple-effect(href='https://github.com/shaw3257/hive')
-              | Source Code
+              | Source Code  

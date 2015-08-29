@@ -16,7 +16,7 @@ angular.module('hive').directive('board', function(){
     '<div class="board-container">' +
       '<div id="board-oppenent-line" class="player-line">{{hive.usernameOpponent}}</div>' +
       '<div id="board-canvas"></div>' +
-      '<div id="board-me-line" class="player-line" ng-show="hive.ready">{{hive.username}} (ME) </div>' +
+      '<div id="board-me-line" class="player-line" ng-show="hive.ready">{{hive.username}} (Me) </div>' +
     '</div>',
 
     link: function($scope, element, attrs){
@@ -77,7 +77,7 @@ UI = function(board, opts){
   this.padding = opts.padding || 6;
   this.container = opts.container;
   this.canvasWidth = opts.width || 800;
-  this.canvasHeight = opts.height || (typeof(window) !== 'undefined' ? Math.max(window.innerHeight - 210) : 600);
+  this.canvasHeight = opts.height || (typeof(window) !== 'undefined' ? Math.max(window.innerHeight - 130) : 600);
   this.zScale = opts.zScale || 3;
   this.assistThreshold = opts.assistThreshold || this.radiusShort - 1;
   this.stage = new Kinetic.Stage({
@@ -332,7 +332,6 @@ angular.module('hive').controller('gameCtrl', function($scope, userService){
   $scope.newGameAI = function(type){
     console.log('new game happened');
     $scope.hive = new Hive({ 
-      username: userService.username
     });
   }
 
@@ -458,12 +457,8 @@ AI.prototype.bestMove = function(depth) {
 
 AI.prototype.minimax = function(depth, maximizing, alpha, beta, notation) {
   if(notation) {
-    this.board.queue.push(notation);
-    this.board.processQueue();
-    if(this.board.errors.length > 0){
-      console.error(this.board.errors, this.board.moves, notation);
-      throw new Error('AI Board should never have errors');
-    }
+    this.board.moves.push(notation);
+    this.board.movement(notation);
   }
   if(depth === 0){
     evalCnt += 1;
@@ -1245,6 +1240,7 @@ Hive.prototype.playAI = function(){
     }
   }
   this.status = this.turnStatus();
+  this.ready = true;
   this.broadcast('ready', this.board);
 }
 

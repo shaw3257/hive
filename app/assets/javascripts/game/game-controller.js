@@ -6,7 +6,6 @@ angular.module('hive').controller('gameCtrl', function($scope, userService){
   $scope.newGameAI = function(type){
     console.log('new game happened');
     $scope.hive = new Hive({ 
-      username: userService.username
     });
   }
 

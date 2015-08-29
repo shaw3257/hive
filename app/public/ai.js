@@ -109,12 +109,8 @@ AI.prototype.bestMove = function(depth) {
 
 AI.prototype.minimax = function(depth, maximizing, alpha, beta, notation) {
   if(notation) {
-    this.board.queue.push(notation);
-    this.board.processQueue();
-    if(this.board.errors.length > 0){
-      console.error(this.board.errors, this.board.moves, notation);
-      throw new Error('AI Board should never have errors');
-    }
+    this.board.moves.push(notation);
+    this.board.movement(notation);
   }
   if(depth === 0){
     evalCnt += 1;

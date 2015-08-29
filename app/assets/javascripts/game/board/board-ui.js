@@ -11,7 +11,7 @@ UI = function(board, opts){
   this.padding = opts.padding || 6;
   this.container = opts.container;
   this.canvasWidth = opts.width || 800;
-  this.canvasHeight = opts.height || (typeof(window) !== 'undefined' ? Math.max(window.innerHeight - 210) : 600);
+  this.canvasHeight = opts.height || (typeof(window) !== 'undefined' ? Math.max(window.innerHeight - 130) : 600);
   this.zScale = opts.zScale || 3;
   this.assistThreshold = opts.assistThreshold || this.radiusShort - 1;
   this.stage = new Kinetic.Stage({

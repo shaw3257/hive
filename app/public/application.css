@@ -9768,7 +9768,7 @@ body {
   background: url("/images/board_background.jpg"); }
 
 #board-canvas {
-  padding: 10px 0 10px 0; }
+  padding: 10px 0 0 0; }
 
 .board-container {
   width: 800px;

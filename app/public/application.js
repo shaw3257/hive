@@ -1192,6 +1192,7 @@ Hive = function(opts){
   this.board = new Board();
   this.status = 'Waiting for players...';
   this.aiWorker = undefined;
+  this.quietMode = false;
   this.listeners = {
     ready: [],
     resignation: []
@@ -1226,7 +1227,7 @@ Hive.prototype.playAI = function(){
     };
     this.board.on('move', function(e){
       _this.status = _this.turnStatus();
-      if(!_this.isMyTurn()){
+      if(!_this.isMyTurn() && !_this.quietMode){
         aiWorker.postMessage(e.notation);
       }
     });
@@ -29950,13 +29951,13 @@ module.exports = angular;
 (function (global){
 
 /*
- * KineticJS JavaScript Framework v5.1.1
- * http://www.kineticjs.com/
- * Copyright 2013, Eric Rowell
+ * KineticJS JavaScript Framework v5.2.0
+ * http://lavrton.github.io/KineticJS/
  * Licensed under the MIT or GPL Version 2 licenses.
- * Date: 2015-08-27
+ * Date: 2015-01-22
  *
- * Copyright (C) 2011 - 2013 by Eric Rowell
+ * Original work Copyright (C) 2011 - 2013 by Eric Rowell
+ * Modified work Copyright (C) 2014 - 2015 by Anton Lavrenov
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29986,7 +29987,7 @@ var Kinetic = {};
 
     Kinetic = {
         // public
-        version: '5.1.1',
+        version: '5.2.0',
 
         // private
         stages: [],
@@ -30460,13 +30461,15 @@ var Kinetic = {};
         },
         _addName: function(node, name) {
             if(name !== undefined) {
-                var names = name.split(/\W+/g);
+
+                var names = name.split(/\s/g);
                 for(var n = 0; n < names.length; n++) {
-                    if (names[n]) {
-                        if(this.names[names[n]] === undefined) {
-                            this.names[names[n]] = [];
+                    var subname = names[n];
+                    if (subname) {
+                        if(this.names[subname] === undefined) {
+                            this.names[subname] = [];
                         }
-                        this.names[names[n]].push(node);
+                        this.names[subname].push(node);
                     }
                 }
             }
@@ -31212,12 +31215,19 @@ var Kinetic = {};
                 console.warn(KINETIC_WARNING + str);
             }
         },
-        extend: function(c1, c2) {
-            for(var key in c2.prototype) {
-                if(!( key in c1.prototype)) {
-                    c1.prototype[key] = c2.prototype[key];
+        extend: function(child, parent) {
+                function ctor() {
+                    this.constructor = child;
                 }
-            }
+                ctor.prototype = parent.prototype;
+                var old_proto = child.prototype;
+                child.prototype = new ctor();
+                for (var key in old_proto) {
+                    if (old_proto.hasOwnProperty(key)) {
+                        child.prototype[key] = old_proto[key];
+                    }
+                }
+                child.__super__ = parent.prototype;
         },
         /**
          * adds methods to a constructor prototype
@@ -32554,17 +32564,6 @@ var Kinetic = {};
                     name: name,
                     handler: handler
                 });
-
-                // NOTE: this flag is set to true when any event handler is added, even non
-                // mouse or touch gesture events.  This improves performance for most
-                // cases where users aren't using events, but is still very light weight.  
-                // To ensure perfect accuracy, devs can explicitly set listening to false.
-                /*
-                if (name !== KINETIC) {
-                    this._listeningEnabled = true;
-                    this._clearSelfAndAncestorCache(LISTENING_ENABLED);
-                }
-                */
             }
 
             return this;
@@ -32745,7 +32744,7 @@ var Kinetic = {};
 
             if(config) {
                 for(key in config) {
-                    if (key === CHILDREN) {
+                    if (key === CHILDREN || config[key] instanceof Kinetic.Node) {
 
                     }
                     else {
@@ -32853,7 +32852,7 @@ var Kinetic = {};
         shouldDrawHit: function(canvas) {
             var layer = this.getLayer();
             return  (canvas && canvas.isCache) || (layer && layer.hitGraphEnabled())
-                && this.isListening() && this.isVisible() && !Kinetic.isDragging();
+                && this.isListening() && this.isVisible();
         },
         /**
          * show node
@@ -33744,7 +33743,7 @@ var Kinetic = {};
     });
 
     /**
-     * create node with JSON string.  De-serialization does not generate custom
+     * create node with JSON string.  De-serializtion does not generate custom
      *  shape drawing functions, images, or event handlers (this would make the
      *  serialized object huge).  If your app uses custom shapes, images, and
      *  event handlers (it probably does), then you need to select the appropriate
@@ -34051,6 +34050,7 @@ var Kinetic = {};
     /**
      * get/set offset x
      * @name offsetX
+     * @method
      * @memberof Kinetic.Node.prototype
      * @param {Number} x
      * @returns {Number}
@@ -34063,26 +34063,6 @@ var Kinetic = {};
      */
 
     Kinetic.Factory.addGetterSetter(Kinetic.Node, 'offsetY', 0);
-
-    /**
-     * get/set drag distance
-     * @name dragDistance
-     * @memberof Kinetic.Node.prototype
-     * @param {Number} distance
-     * @returns {Number}
-     * @example
-     * // get drag distance
-     * var dragDistance = node.dragDistance();
-     *
-     * // set distance
-     * // node starts dragging only if pointer moved more then 3 pixels
-     * node.dragDistance(3);
-     * // or set globally
-     * Kinetic.dragDistance = 3;
-     */
-
-    Kinetic.Factory.addSetter(Kinetic.Node, 'dragDistance');
-    Kinetic.Factory.addOverloadedGetterSetter(Kinetic.Node, 'dragDistance');
 
     /**
      * get/set offset y
@@ -34098,6 +34078,28 @@ var Kinetic = {};
      * // set offset y
      * node.offsetY(3);
      */
+
+    Kinetic.Factory.addSetter(Kinetic.Node, 'dragDistance');
+    Kinetic.Factory.addOverloadedGetterSetter(Kinetic.Node, 'dragDistance');
+
+    /**
+     * get/set drag distance
+     * @name dragDistance
+     * @method
+     * @memberof Kinetic.Node.prototype
+     * @param {Number} distance
+     * @returns {Number}
+     * @example
+     * // get drag distance
+     * var dragDistance = node.dragDistance();
+     *
+     * // set distance
+     * // node starts dragging only if pointer moved more then 3 pixels
+     * node.dragDistance(3);
+     * // or set globally
+     * Kinetic.dragDistance = 3;
+     */
+
 
     Kinetic.Factory.addSetter(Kinetic.Node, 'width', 0);
     Kinetic.Factory.addOverloadedGetterSetter(Kinetic.Node, 'width');
@@ -37210,7 +37212,7 @@ var Kinetic = {};
      * var dragBoundFunc = node.dragBoundFunc();
      *
      * // create vertical drag and drop
-     * node.dragBoundFunc(function(){
+     * node.dragBoundFunc(function(pos){
      *   return {
      *     x: this.getAbsolutePosition().x,
      *     y: pos.y
@@ -37360,6 +37362,11 @@ var Kinetic = {};
                 child: child
             });
 
+            // if node under drag we need to update drag animation
+            if (child.isDragging()) {
+                Kinetic.DD.anim.setLayers(child.getLayer());
+            }
+
             // chainable
             return this;
         },
@@ -37427,9 +37434,6 @@ var Kinetic = {};
             }
 
             return Kinetic.Collection.toCollection(retArr);
-        },
-        findOne: function(selector) {
-            return this.find(selector)[0];
         },
         _getNodeById: function(key) {
             var node = Kinetic.ids[key];
@@ -37601,8 +37605,10 @@ var Kinetic = {};
         },
         shouldDrawHit: function(canvas) {
             var layer = this.getLayer();
+            var dd = Kinetic.DD;
+            var layerUnderDrag = dd && Kinetic.isDragging() && (Kinetic.DD.anim.getLayers().indexOf(layer) !== -1);
             return  (canvas && canvas.isCache) || (layer && layer.hitGraphEnabled())
-                && this.isVisible() && !Kinetic.isDragging();
+                && this.isVisible() && !layerUnderDrag;
         }
     });
 
@@ -38434,6 +38440,9 @@ var Kinetic = {};
      *
      * // set fill color with rgba and make it 50% opaque
      * shape.fill('rgba(0,255,0,0.5');
+     *
+     * // shape without fill
+     * shape.fill(null);
      */
 
     Kinetic.Factory.addGetterSetter(Kinetic.Shape, 'fillRed', 0, Kinetic.Validators.RGBComponent);
@@ -39909,7 +39918,12 @@ var Kinetic = {};
          * @param {Number} [bounds.height]
          * @example
          * layer.clear();
-         * layer.clear(0, 0, 100, 100);
+         * layer.clear({
+         *   x : 0,
+         *   y : 0,
+         *   width : 100,
+         *   height : 100
+         * });
          */
         clear: function(bounds) {
             this.getContext().clear(bounds);
@@ -40245,7 +40259,12 @@ var Kinetic = {};
          * @param {Number} [bounds.height]
          * @example
          * layer.clear();
-         * layer.clear(0, 0, 100, 100);
+         * layer.clear({
+         *   x : 0,
+         *   y : 0,
+         *   width : 100,
+         *   height : 100
+         * });
          */
         clear: function(bounds) {
             this.getContext().clear(bounds);
@@ -40377,7 +40396,12 @@ var Kinetic = {};
          * @param {Number} [bounds.height]
          * @example
          * layer.clear();
-         * layer.clear(0, 0, 100, 100);
+         * layer.clear({
+         *   x : 0,
+         *   y : 0,
+         *   width : 100,
+         *   height : 100
+         * });
          */
         clear: function(bounds) {
             this.getContext().clear(bounds);
@@ -41866,7 +41890,8 @@ var Kinetic = {};
 
     Kinetic.Text.prototype = {
         ___init: function(config) {
-            var that = this;
+            config = config || {};
+            config.fill = config.fill || 'black';
 
             if (config.width === undefined) {
                 config.width = AUTO;
@@ -41884,7 +41909,7 @@ var Kinetic = {};
 
             // update text data for certain attr changes
             for(var n = 0; n < attrChangeListLen; n++) {
-                this.on(ATTR_CHANGE_LIST[n] + CHANGE_KINETIC, that._setTextData);
+                this.on(ATTR_CHANGE_LIST[n] + CHANGE_KINETIC, this._setTextData);
             }
 
             this._setTextData();
@@ -42398,6 +42423,10 @@ var Kinetic = {};
                 closed = this.getClosed(),
                 tp, len, n;
 
+            if (!length) {
+                return;
+            }
+
             context.beginPath();
             context.moveTo(points[0], points[1]);
 
@@ -42533,7 +42562,7 @@ var Kinetic = {};
      * line.tension(3);
      */
 
-    Kinetic.Factory.addGetterSetter(Kinetic.Line, 'points');
+    Kinetic.Factory.addGetterSetter(Kinetic.Line, 'points', []);
     /**
      * get/set points array
      * @name points
@@ -42720,6 +42749,7 @@ var Kinetic = {};
                 index = this.frameIndex(),
                 ix4 = index * 4,
                 set = this.getAnimations()[anim],
+                offsets = this.frameOffsets(),
                 x =      set[ix4 + 0],
                 y =      set[ix4 + 1],
                 width =  set[ix4 + 2],
@@ -42727,7 +42757,13 @@ var Kinetic = {};
                 image = this.getImage();
 
             if(image) {
-                context.drawImage(image, x, y, width, height, 0, 0, width, height);
+                if (offsets) {
+                    var offset = offsets[anim],
+                    ix2 = index * 2;
+                    context.drawImage(image, x, y, width, height, offset[ix2 + 0], offset[ix2 + 1], width, height);
+                } else {
+                    context.drawImage(image, x, y, width, height, 0, 0, width, height);
+                }
             }
         },
         _hitFunc: function(context) {
@@ -42735,11 +42771,18 @@ var Kinetic = {};
                 index = this.frameIndex(),
                 ix4 = index * 4,
                 set = this.getAnimations()[anim],
+                offsets = this.frameOffsets(),
                 width =  set[ix4 + 2],
                 height = set[ix4 + 3];
 
             context.beginPath();
-            context.rect(0, 0, width, height);
+            if (offsets) {
+                var offset = offsets[anim];
+                var ix2 = index * 2;
+                context.rect(offset[ix2 + 0], offset[ix2 + 1], width, height);
+            } else {
+                context.rect(0, 0, width, height);
+            }
             context.closePath();
             context.fillShape(this);
         },
@@ -42859,6 +42902,42 @@ var Kinetic = {};
      * });
      */
 
+    Kinetic.Factory.addGetterSetter(Kinetic.Sprite, 'frameOffsets');
+
+    /**
+    * get/set offsets map
+    * @name offsets
+    * @method
+    * @memberof Kinetic.Sprite.prototype
+    * @param {Object} offsets
+    * @returns {Object}
+    * @example
+    * // get offsets map
+    * var offsets = sprite.offsets();
+    *
+    * // set offsets map
+    * sprite.offsets({
+    *   standing: [
+    *     // x, y (6 frames)
+    *     0, 0,
+    *     0, 0,
+    *     5, 0,
+    *     0, 0,
+    *     0, 3,
+    *     2, 0
+    *   ],
+    *   kicking: [
+    *     // x, y (6 frames)
+    *     0, 5,
+    *     5, 0,
+    *     10, 0,
+    *     0, 0,
+    *     2, 1,
+    *     0, 0
+    *   ]
+    * });
+    */
+ 
     Kinetic.Factory.addGetterSetter(Kinetic.Sprite, 'image');
 
     /**

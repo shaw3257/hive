@@ -1,7 +1,7 @@
 ### https://playhive.herokuapp.com/
 
 ## About Hive
-Hive is a tabletop game designed by John Yianni and published in 2001 by [Gen42 Games](http://gen42.com). It's a two player turn based game where the goal is to completely surround the opposing player's queen bee. Each game piece has different ways of moving around the hexagonal grid -- More information about these movements and game rules can be found here http://www.gen42.com/downloads/rules/Hive_Rules.pdf.
+Hive is a tabletop game designed by John Yianni and published in 2001 by [Gen42 Games](http://gen42.com). It's a two player turn based game where the goal is to completely surround the opposing player's queen bee. Each game piece has different ways of moving around the hexagonal grid -- More information about these movements and game rules can be found here https://www.gen42.com/download/rules/hive/Hive_English_Rules.pdf.
 
 ## Development
 

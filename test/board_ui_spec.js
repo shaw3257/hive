@@ -1,4 +1,4 @@
-var expect = require('chai').expect;
+var expect = global.expect;
 var UI = require('../app/assets/javascripts/game/board/board-ui');
 var Board = require('../lib/board');
 var Kinetic = require('kinetic');

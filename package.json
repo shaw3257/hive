@@ -4,34 +4,19 @@
   "description": "Hive the game",
   "main": "board.js",
   "scripts": {
-    "test": "mocha --require ./test/setup.js"
+    "build": "node ./scripts/build.js",
+    "test": "node --require ./test/setup.js --test --test-concurrency=1 test/*_spec.js"
   },
   "author": "Shawn O'Mara",
   "license": "MIT",
   "devDependencies": {
-    "chai": "^2.3.0",
-    "grunt": "^1.6.1",
-    "grunt-browserify": "^5.3.0",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-concat": "^2.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-sass": "^4.1.0",
-    "jsdom": "^16.2.2",
-    "load-grunt-tasks": "^5.1.0",
-    "mocha": "^11.7.4",
-    "sass": "^1.98.0",
-    "es6-promise": "^2.1.1",
-    "supertest": "^0.15.0"
+    "esbuild": "^0.27.4",
+    "jsdom": "^29.0.1"
   },
   "dependencies": {
-    "angular": "^1.4.1",
-    "express": "^4.12.3",
-    "jade": "^1.9.2",
+    "express": "^5.2.1",
     "kinetic": "5.2.0",
-    "lodash": "^3.8.0",
-    "material-design-lite": "1.0.3",
-    "socket.io": "^1.3.5",
-    "socket.io-client": "^1.3.5"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
   }
 }

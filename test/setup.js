@@ -1,3 +1,5 @@
+var assert = require('node:assert/strict');
+var nodeTest = require('node:test');
 var JSDOM = require('jsdom').JSDOM;
 
 var dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
@@ -14,6 +16,12 @@ global.Image = dom.window.Image;
 global.requestAnimationFrame = dom.window.requestAnimationFrame.bind(dom.window);
 global.cancelAnimationFrame = dom.window.cancelAnimationFrame.bind(dom.window);
 global.getComputedStyle = dom.window.getComputedStyle.bind(dom.window);
+global.describe = nodeTest.describe;
+global.it = nodeTest.it;
+global.before = nodeTest.before;
+global.after = nodeTest.after;
+global.beforeEach = nodeTest.beforeEach;
+global.afterEach = nodeTest.afterEach;
 
 function noop() {}
 
@@ -90,3 +98,87 @@ Object.defineProperty(global.HTMLCanvasElement.prototype, 'getContext', {
     return this._context2d;
   }
 });
+
+function sameMembers(actual, expected) {
+  assert.strictEqual(actual.length, expected.length);
+  expected.forEach(function(item) {
+    assert.notStrictEqual(actual.indexOf(item), -1);
+  });
+}
+
+global.expect = function(actual) {
+  var state = { deep: false };
+  var chain = {};
+
+  function eq(expected) {
+    if (state.deep) {
+      assert.deepStrictEqual(actual, expected);
+    } else {
+      assert.strictEqual(actual, expected);
+    }
+    return chain;
+  }
+
+  function eql(expected) {
+    assert.deepStrictEqual(actual, expected);
+    return chain;
+  }
+
+  function closeTo(expected, delta) {
+    assert.ok(Math.abs(actual - expected) <= delta);
+    return chain;
+  }
+
+  Object.defineProperty(chain, 'to', {
+    get: function() {
+      return chain;
+    }
+  });
+
+  Object.defineProperty(chain, 'be', {
+    get: function() {
+      return chain;
+    }
+  });
+
+  Object.defineProperty(chain, 'have', {
+    get: function() {
+      return chain;
+    }
+  });
+
+  Object.defineProperty(chain, 'deep', {
+    get: function() {
+      state.deep = true;
+      return chain;
+    }
+  });
+
+  Object.defineProperty(chain, 'empty', {
+    get: function() {
+      if (Array.isArray(actual) || typeof actual === 'string') {
+        assert.strictEqual(actual.length, 0);
+      } else {
+        assert.strictEqual(Object.keys(actual).length, 0);
+      }
+      return chain;
+    }
+  });
+
+  Object.defineProperty(chain, 'true', {
+    get: function() {
+      assert.strictEqual(actual, true);
+      return chain;
+    }
+  });
+
+  chain.eq = eq;
+  chain.eql = eql;
+  chain.members = function(expected) {
+    sameMembers(actual, expected);
+    return chain;
+  };
+  chain.closeTo = closeTo;
+
+  return chain;
+};

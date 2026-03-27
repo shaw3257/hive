@@ -1,22 +1,25 @@
-var expect = require('chai').expect;
+var expect = global.expect;
 var Hive = require('../lib/hive');
+
+process.env.PORT = '0';
+
 var app = require('../app/server');
-var Promise = require('es6-promise').Promise;
 
 describe('Hive', function(){
 
   var hive_one, hive_two, server, activeHive, passiveHive;
 
-  before(function(done){
+  before(async function(){
     server = app;
-    hive_one = new Hive({endpoint: 'http://localhost:3001', room: 'random', username: 'Shawn'});
-    hive_two = new Hive({endpoint: 'http://localhost:3001', room: 'random', username: 'Brian'});
-    var p1 = new Promise(function(resolve, reject){
+    var endpoint = 'http://localhost:' + server.address().port;
+    hive_one = new Hive({endpoint: endpoint, room: 'random', username: 'Shawn'});
+    hive_two = new Hive({endpoint: endpoint, room: 'random', username: 'Brian'});
+    var p1 = new Promise(function(resolve){
       hive_one.on('ready', function(){
         resolve();
       });
     });
-    var p2 = new Promise(function(resolve, reject) {
+    var p2 = new Promise(function(resolve) {
       hive_two.on('ready', function(){
         resolve();
       });
@@ -25,13 +28,15 @@ describe('Hive', function(){
     hive_one.connect();
     hive_two.connect();
 
-    Promise.all([p1, p2]).then(function(){ done() });
+    await Promise.all([p1, p2]);
   });
 
-  after(function(done){
+  after(async function(){
     hive_one.disconnect();
     hive_two.disconnect();
-    server.io.close(done);
+    await new Promise(function(resolve) {
+      server.io.close(resolve);
+    });
   });
 
   describe('ready',function(){
@@ -64,11 +69,11 @@ describe('Hive', function(){
       activeHive.board.processQueue(true);
     });
 
-    it('updates other board', function(done){
-      setTimeout(function(){
-        expect(passiveHive.board.moves.length).to.be.eq(1);
-        done()
-      }, 1000)
+    it('updates other board', async function(){
+      await new Promise(function(resolve) {
+        setTimeout(resolve, 1000);
+      });
+      expect(passiveHive.board.moves.length).to.be.eq(1);
     });
 
   });

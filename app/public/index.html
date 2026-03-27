@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" href="/application.css">
+    <script src="/application.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-19202476-5', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <div class="game">
+      <div class="left">
+        <div class="board-container">
+          <div id="board-opponent-line" class="player-line" hidden></div>
+          <div id="board-canvas"></div>
+          <div id="board-me-line" class="player-line" hidden></div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="panel">
+          <div class="panel__title">
+            <h2 id="status-title" class="panel__title-text">Play Hive</h2>
+          </div>
+          <div class="panel__body"></div>
+          <div class="actions">
+            <a id="new-game-random" class="button" href="#">VS Random</a>
+            <a id="new-game-ai" class="button" href="#">VS Computer</a>
+            <a id="resign-game" class="button is-disabled" href="#" aria-disabled="true">Resign</a>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel__title">
+            <h2 class="panel__title-text">Information</h2>
+          </div>
+          <div class="panel__body">
+            New to Hive? Check out the rules below. The source code is also available below.
+          </div>
+          <div class="actions">
+            <a class="button" href="https://www.gen42.com/wp-content/uploads/Hive-rules.pdf" target="_blank">Rules</a>
+            <a class="button" href="https://github.com/shaw3257/hive" target="_blank">Source Code</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

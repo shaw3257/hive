@@ -1,4 +1,4 @@
-var expect = require('chai').expect;
+var expect = global.expect;
 var Board = require('../lib/board');
 var AI = require('../lib/ai');
 

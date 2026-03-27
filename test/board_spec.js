@@ -1,7 +1,11 @@
-var expect = require('chai').expect;
-var _ = require('lodash');
+var expect = global.expect;
 var Board = require('../lib/board');
 var Piece = Board.Piece;
+
+function withLocation(piece, location) {
+  piece.location = location;
+  return piece;
+}
 
 describe('Board', function(){
 
@@ -16,27 +20,13 @@ describe('Board', function(){
 
 
     beforeEach(function () {
-      p1 = board.hive['0:-1:0'] = _.tap(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), function (p) {
-        p.location = '0:-1:0'
-      });
-      p2 = board.hive['0:1:0'] = _.tap(new Piece({type: 'BEETLE', color: Board.WHITE}), function (p) {
-        p.location = '0:1:0'
-      });
-      p3 = board.hive['1:0:0'] = _.tap(new Piece({type: 'SPIDER', color: Board.WHITE}), function (p) {
-        p.location = '1:0:0'
-      });
-      p4 = board.hive['1:-2:0'] = _.tap(new Piece({type: 'QUEEN', color: Board.WHITE}), function (p) {
-        p.location = '1:-2:0'
-      });
-      p5 = board.hive['-1:-2:0'] = _.tap(new Piece({type: 'BEETLE', color: Board.WHITE}), function (p) {
-        p.location = '-1:-2:0'
-      });
-      p6 = board.hive['-1:0:0'] = _.tap(new Piece({type: 'ANT', color: Board.WHITE}), function (p) {
-        p.location = '-1:-0:0'
-      });
-      p7 = board.hive['2:-3:0'] = _.tap(new Piece({type: 'SPIDER', color: Board.WHITE}), function (p) {
-        p.location = '2:-3:0'
-      });
+      p1 = board.hive['0:-1:0'] = withLocation(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), '0:-1:0');
+      p2 = board.hive['0:1:0'] = withLocation(new Piece({type: 'BEETLE', color: Board.WHITE}), '0:1:0');
+      p3 = board.hive['1:0:0'] = withLocation(new Piece({type: 'SPIDER', color: Board.WHITE}), '1:0:0');
+      p4 = board.hive['1:-2:0'] = withLocation(new Piece({type: 'QUEEN', color: Board.WHITE}), '1:-2:0');
+      p5 = board.hive['-1:-2:0'] = withLocation(new Piece({type: 'BEETLE', color: Board.WHITE}), '-1:-2:0');
+      p6 = board.hive['-1:0:0'] = withLocation(new Piece({type: 'ANT', color: Board.WHITE}), '-1:-0:0');
+      p7 = board.hive['2:-3:0'] = withLocation(new Piece({type: 'SPIDER', color: Board.WHITE}), '2:-3:0');
     });
 
     describe('surroundingPieces', function () {
@@ -77,12 +67,8 @@ describe('Board', function(){
     describe('crawlableLocations', function () {
 
       beforeEach(function () {
-        board.hive['1:0:1'] = _.tap(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), function (p) {
-          p.location = '1:0:1'
-        });
-        board.hive['1:0:2'] = _.tap(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), function (p) {
-          p.location = '1:0:2'
-        });
+        board.hive['1:0:1'] = withLocation(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), '1:0:1');
+        board.hive['1:0:2'] = withLocation(new Piece({type: 'GRASSHOPPER', color: Board.WHITE}), '1:0:2');
       });
 
       it('returns highest surroundingLocations plus one in the z direction', function () {
@@ -112,8 +98,8 @@ describe('Board', function(){
       it('validates turn order', function(){
         board.queue.push('b:p:q_1:0:-1:0');
         board.processQueue();
-        expect(board.errors.length).to.be.eql(1);
-        expect(board.errors[0]).to.be.eql('It is not BLACK\'s turn to play')
+      expect(board.errors.length).to.eql(1);
+      expect(board.errors[0]).to.eql('It is not BLACK\'s turn to play')
       });
 
       it('validates with correct turn order', function(){

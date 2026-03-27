@@ -5,9 +5,10 @@ var Promise = require('es6-promise').Promise;
 
 describe('Hive', function(){
 
-  var hive_one, hive_two;
+  var hive_one, hive_two, server, activeHive, passiveHive;
 
   before(function(done){
+    server = app;
     hive_one = new Hive({endpoint: 'http://localhost:3001', room: 'random', username: 'Shawn'});
     hive_two = new Hive({endpoint: 'http://localhost:3001', room: 'random', username: 'Brian'});
     var p1 = new Promise(function(resolve, reject){
@@ -25,6 +26,12 @@ describe('Hive', function(){
     hive_two.connect();
 
     Promise.all([p1, p2]).then(function(){ done() });
+  });
+
+  after(function(done){
+    hive_one.disconnect();
+    hive_two.disconnect();
+    server.io.close(done);
   });
 
   describe('ready',function(){
@@ -51,12 +58,15 @@ describe('Hive', function(){
   describe('move', function(){
     
     before(function(){
-      hive_one.board.broadcast('move', { notation: 'w:p:q_1:0:-1:0' });
+      activeHive = hive_one.color === 'WHITE' ? hive_one : hive_two;
+      passiveHive = activeHive === hive_one ? hive_two : hive_one;
+      activeHive.board.queue.push('w:p:q_1:0:-1:0');
+      activeHive.board.processQueue(true);
     });
 
     it('updates other board', function(done){
       setTimeout(function(){
-        expect(hive_two.board.moves.length).to.be.eq(1);
+        expect(passiveHive.board.moves.length).to.be.eq(1);
         done()
       }, 1000)
     });

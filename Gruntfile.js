@@ -7,6 +7,7 @@ module.exports = function(grunt){
   grunt.initConfig({
     sass: {
       options: {
+        implementation: require('sass'),
         sourceMap: false
       },
       dist: {

@@ -10,6 +10,7 @@ var port = (process.env.PORT || 3001);
 console.log('Server listening on port ', port);
 
 var io = require('socket.io')(server);
+server.io = io;
 server.listen(port);
 
 app.set('views', path.join(__dirname, 'views'))
@@ -48,7 +49,7 @@ io.on('connect', function (socket) {
 });
 
 function socketsWithInterest(){
-  return io.sockets.sockets.filter(function(socket){
+  return _.filter(_.values(io.sockets.sockets), function(socket){
     return socket.handshake.query.room === 'random';
   });
 }
@@ -56,3 +57,5 @@ function socketsWithInterest(){
 function generateGameId (len) {
   return crypto.randomBytes(Math.ceil(len/2)).toString('hex').slice(0,len);
 }
+
+module.exports = server;

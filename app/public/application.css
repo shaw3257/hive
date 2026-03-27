@@ -8,33 +8,40 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
   border: 0;
   font-size: 100%;
   font: inherit;
-  vertical-align: baseline; }
+  vertical-align: baseline;
+}
 
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-  display: block; }
+  display: block;
+}
 
 body {
-  line-height: 1; }
+  line-height: 1;
+}
 
 ol, ul {
-  list-style: none; }
+  list-style: none;
+}
 
 blockquote, q {
-  quotes: none; }
+  quotes: none;
+}
 
 blockquote:before, blockquote:after {
-  content: '';
-  content: none; }
+  content: "";
+  content: none;
+}
 
 q:before, q:after {
-  content: '';
-  content: none; }
+  content: "";
+  content: none;
+}
 
 table {
   border-collapse: collapse;
-  border-spacing: 0; }
-
+  border-spacing: 0;
+}
 /**
  * material-design-lite - Material Design Components in CSS, JS and HTML
  * @version v1.0.3
@@ -9761,21 +9768,26 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       width: 100%; } }
 
 * {
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
 
 body {
-  font-family: 'Roboto';
-  background: url("/images/board_background.jpg"); }
+  font-family: "Roboto";
+  background: url("/images/board_background.jpg");
+}
 
 #board-canvas {
-  padding: 10px 0 0 0; }
+  padding: 10px 0 0 0;
+}
 
 .board-container {
   width: 800px;
-  margin: 10px auto 0 auto; }
+  margin: 10px auto 0 auto;
+}
 
 .board {
-  margin: 10px 0; }
+  margin: 10px 0;
+}
 
 .player-line {
   margin: 12px 0 0px 37px;
@@ -9783,22 +9795,28 @@ body {
   color: #333333;
   display: inline-block;
   border-radius: 3px;
-  color: black; }
+  color: black;
+}
 
 .left {
   float: left;
-  width: calc(100% - 500px); }
+  width: calc(100% - 500px);
+}
 
 .right {
   float: right;
-  padding: 0 15px 0 0; }
+  padding: 0 15px 0 0;
+}
 
 .actions {
-  margin: 15px 0 0 0; }
-  .actions .mdl-button {
-    margin: 0 10px 0 0; }
+  margin: 15px 0 0 0;
+}
+.actions .mdl-button {
+  margin: 0 10px 0 0;
+}
 
 .hive-card-wide {
   margin: 15px 0 0 0;
   width: 485px;
-  min-height: 100px; }
+  min-height: 100px;
+}

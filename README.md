@@ -22,14 +22,14 @@ The hive server runs on Node.js through Socket.io on the Express framework. The 
 npm install
 ```
 
+##### Build Client Assets
+``` Shell
+npm run build
+```
+
 ##### Run Tests
 ``` Shell
 npm test
-```
-
-##### Compile and Watch Assets
-``` Shell
-grunt && grunt watch
 ```
 
 ##### Run Server

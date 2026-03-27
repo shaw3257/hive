@@ -241,6 +241,7 @@ var global = globalThis;
         valid = valid && this.validateColorTurnOrder(notation);
         valid = valid && this.validateQueenPlaced(notation);
         valid = valid && this.validateConnected(notation);
+        valid = valid && this.validateMovementAfterQueen(notation);
         if (!skipMovment) {
           valid = valid && this.validateMovement(notation);
         }
@@ -248,6 +249,18 @@ var global = globalThis;
           this.errors = [];
         }
         return valid;
+      };
+      Board2.prototype.validateMovementAfterQueen = function(notation) {
+        var moveType = Board2.moveTypeFromNotation(notation);
+        if (moveType === "p") {
+          return true;
+        }
+        var color = Board2.colorFromNotation(notation);
+        if (this.hasQueenBeenPlayed(color)) {
+          return true;
+        }
+        this.errors.push("Attempted to move a piece before queen was played");
+        return false;
       };
       Board2.prototype.validateMovement = function(notation) {
         var valid;
@@ -382,6 +395,11 @@ var global = globalThis;
       Board2.prototype.findPiece = function(color, pieceType, pieceTypeId) {
         return this.pieces[color].filter(function(piece) {
           return piece.color === color && piece.type === pieceType && piece.typeId === parseInt(pieceTypeId);
+        })[0];
+      };
+      Board2.prototype.hasQueenBeenPlayed = function(color) {
+        return !!this.pieces[color].filter(function(piece) {
+          return piece.type === "QUEEN" && piece.isInPlay;
         })[0];
       };
       Board2.prototype.processQueue = function(flushErrors) {

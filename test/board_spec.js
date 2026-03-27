@@ -135,6 +135,20 @@ describe('Board', function(){
 
     });
 
+    describe('validateMovementAfterQueen', function(){
+
+      it('adds error when piece is moved before queen', function(){
+        board.queue.push('w:p:g_8:0:-1:0')
+        board.queue.push('b:p:g_6:0:1:0')
+        board.queue.push('w:m:g_8:0:3:0')
+    
+        board.processQueue();
+        expect(board.errors.length).to.be.eql(1);
+        expect(board.errors[0]).to.be.eql('Attempted to move a piece before queen was played');
+      });
+
+    });
+
     describe('validateQueenPlaced', function(){
 
       it('adds error when queen isn\'t out by turn 7 for white', function(){
@@ -224,7 +238,7 @@ describe('Board', function(){
       describe('ant', function(){
 
         it('can move infinitely', function(){
-          board.queue = ["w:p:g_6:0:-1:0", "b:p:b_5:0:1:0", "w:p:a_9:1:-2:0", "b:p:a_10:1:2:0", "w:m:a_9:0:3:0"];
+          board.queue = ["w:p:q_1:0:-1:0", "b:p:b_5:0:1:0", "w:p:a_9:1:-2:0", "b:p:a_10:1:2:0", "w:m:a_9:0:3:0"];
           board.processQueue();
           expect(board.errors.length).to.be.eql(0);
         });
@@ -254,7 +268,7 @@ describe('Board', function(){
       describe('beetle', function(){
 
         it('can crawl', function(){
-          board.queue = ["w:p:q_1:0:-1:0", "b:p:g_8:0:1:0", "w:p:b_5:0:-3:0", "b:p:s_3:-1:2:0", "w:m:b_5:0:-1:1", "b:m:s_3:0:-3:0", "w:m:b_5:0:1:1"];
+          board.queue = ["w:p:q_1:0:-1:0", "b:p:q_1:0:1:0", "w:p:b_5:0:-3:0", "b:p:s_3:-1:2:0", "w:m:b_5:0:-1:1", "b:m:s_3:0:-3:0", "w:m:b_5:0:1:1"];
           board.processQueue();
           console.log(board.errors);
           expect(board.errors.length).to.be.eql(0);

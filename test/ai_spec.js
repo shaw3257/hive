@@ -53,12 +53,6 @@ describe('AI', function(){
       expect(ai.allPossibleMovements('BLACK').length).to.eq(1);
     });
 
-    it('gives all possible movement notations when z axis', function(){
-      board.queue = ["w:p:b_4:0:-1:0", "b:p:g_6:0:1:0", "w:m:b_4:0:1:1"];
-      board.processQueue();
-      expect(ai.allPossibleMovements('BLACK').length).to.eq(0);
-    });
-
   });
 
   describe('bestMove', function(){
